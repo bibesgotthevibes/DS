@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package graph;
+
+// Service definition
+service GraphProcessor {
+    // Submit a graph from a client
+    rpc SubmitGraph(Graph) returns (SubmissionResponse) {}
+
+    // Query for maximal independent set
+    rpc HasIndependentSet(IndependentSetQuery) returns (QueryResponse) {}
+
+    // Query for matching
+    rpc HasMatching(MatchingQuery) returns (QueryResponse) {}
+}
+
+// Graph representation using adjacency lists
+message Graph {
+    int32 client_id = 1;
+    map<int32, AdjacencyList> adjacency_lists = 2;
+}
+
+message AdjacencyList {
+    repeated int32 neighbors = 1;
+}
+
+message SubmissionResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message IndependentSetQuery {
+    int32 size_threshold = 1;
+}
+
+message MatchingQuery {
+    int32 size_threshold = 1;
+}
+
+message QueryResponse {
+    bool result = 1;
+    string message = 2;
+}
