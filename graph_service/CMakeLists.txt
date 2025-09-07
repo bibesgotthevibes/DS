@@ -38,11 +38,3 @@ endfunction()
 # === Build ALL executables using the function ===
 add_grpc_executable(server server.cpp)
 add_grpc_executable(client client.cpp)
-add_grpc_executable(client1 client1.cpp)
-add_grpc_executable(client2 client2.cpp)
-add_grpc_executable(client1_distributed client1_distributed.cpp)
-add_grpc_executable(client2_distributed client2_distributed.cpp)
-add_grpc_executable(perf_client1 perf_client1.cpp)
-add_grpc_executable(perf_client2 perf_client2.cpp)
-add_grpc_executable(perf_client3 perf_client3.cpp)
-add_executable(generate_test_data generate_test_data.cpp) # This one doesn't need gRPC

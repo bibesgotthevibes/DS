@@ -2,42 +2,41 @@ syntax = "proto3";
 
 package graph;
 
-// Service definition
+// The service provides both a streaming RPC for submission and two unary RPCs for queries.
 service GraphProcessor {
-    // Submit a graph from a client
-    rpc SubmitGraph(Graph) returns (SubmissionResponse) {}
+  // Submit a graph from a client using a stream of batched chunks
+  rpc SubmitGraphStream(stream GraphChunk) returns (SubmissionResponse);
 
-    // Query for maximal independent set
-    rpc HasIndependentSet(IndependentSetQuery) returns (QueryResponse) {}
+  // Query for maximal independent set on the combined graph
+  rpc HasIndependentSet(GraphQuery) returns (QueryResponse);
 
-    // Query for matching
-    rpc HasMatching(MatchingQuery) returns (QueryResponse) {}
+  // Query for matching on the combined graph
+  rpc HasMatching(GraphQuery) returns (QueryResponse);
 }
 
-// Graph representation using adjacency lists
-message Graph {
-    int32 client_id = 1;
-    map<int32, AdjacencyList> adjacency_lists = 2;
+// A "chunk" can now hold a small map of nodes (a batch) for efficiency.
+message GraphChunk {
+  int32 client_id = 1;
+  map<int32, AdjacencyList> adjacency_lists_chunk = 2;
 }
 
 message AdjacencyList {
-    repeated int32 neighbors = 1;
+  repeated int32 neighbors = 1;
 }
 
+// The server sends this back once all chunks are received.
 message SubmissionResponse {
-    bool success = 1;
-    string message = 2;
+  bool success = 1;
+  string message = 2;
 }
 
-message IndependentSetQuery {
-    int32 size_threshold = 1;
+// A single message type for all queries that just take a size threshold.
+message GraphQuery {
+  int32 size_threshold = 1;
 }
 
-message MatchingQuery {
-    int32 size_threshold = 1;
-}
-
+// The response from a query, containing the boolean result.
 message QueryResponse {
-    bool result = 1;
-    string message = 2;
+  bool result = 1;
+  string message = 2;
 }
